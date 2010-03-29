@@ -102,8 +102,8 @@
                 </executions>
             </plugin>
 
-            <plugin>
-            <!--    <groupId>org.codehaus.mojo</groupId>
+         <!--   <plugin>
+                <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <configuration>
                     <check>
@@ -123,8 +123,8 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            -->
+            </plugin>-->
+
         </plugins>
     </build>
 
