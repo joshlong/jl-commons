@@ -32,15 +32,12 @@ public class EmailUtils {
         this.mailSender = mailSender;
     }
 
-    public EmailUtils() {
-    }
-
-    private InternetAddress[] getInternetAddresses(final String... emails) throws Throwable {
+    public InternetAddress[] getInternetAddresses(final String... emails) throws Throwable {
         final List<InternetAddress> addys = new ArrayList<InternetAddress>();
         for (final String e : emails) {
             addys.add(new InternetAddress(e));
         }
-        return addys.toArray(new InternetAddress[0]);
+        return addys.toArray(new InternetAddress[addys.size()]);
     }
 
     public String mergeTemplate(final String template, final Map<String, Object> macros) throws Throwable {

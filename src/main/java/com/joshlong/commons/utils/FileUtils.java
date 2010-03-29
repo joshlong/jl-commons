@@ -14,8 +14,7 @@ public class FileUtils {
 
     private ProcessUtils processUtils;
 
-    public FileUtils() {
-    }
+
 
     public FileUtils(ProcessUtils processUtils) {
         this.processUtils = processUtils;
