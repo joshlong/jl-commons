@@ -2,13 +2,17 @@ package com.joshlong.commons.utils;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+
 import org.jmock.lib.legacy.ClassImposteriser;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
+
 import java.util.List;
+
 
 /**
  * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
@@ -48,17 +52,44 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testCopyFile() throws Throwable {
+    public void testCopyFileThatStillFails() throws Throwable {
         final File a = this.context.mock(File.class, "a");
         final File b = this.context.mock(File.class, "b");
+        final Process proc = this.context.mock(Process.class);
         this.context.checking(new Expectations() {
+
                 {
                     one(a).getAbsolutePath();
                     will(returnValue("/tmp/a.txt"));
                     one(b).getAbsolutePath();
                     will(returnValue("/tmp/b.txt"));
 
-                    one(processUtils).execute(with(any(List.class)))   ;
+                    one(processUtils).execute(with(any(List.class)));
+                    will(returnValue(proc));
+                    one(proc).waitFor();
+                    will(returnValue(1));
+                }
+            });
+        this.fileUtils.copyFile(a, b);
+    }
+
+    @Test
+    public void testCopyFile() throws Throwable {
+        final File a = this.context.mock(File.class, "a");
+        final File b = this.context.mock(File.class, "b");
+        final Process proc = this.context.mock(Process.class);
+        this.context.checking(new Expectations() {
+
+                {
+                    one(a).getAbsolutePath();
+                    will(returnValue("/tmp/a.txt"));
+                    one(b).getAbsolutePath();
+                    will(returnValue("/tmp/b.txt"));
+
+                    one(processUtils).execute(with(any(List.class)));
+                    will(returnValue(proc));
+                    one(proc).waitFor();
+                    will(returnValue(0));
                 }
             });
         this.fileUtils.copyFile(a, b);
