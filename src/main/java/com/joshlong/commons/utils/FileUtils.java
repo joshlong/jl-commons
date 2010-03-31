@@ -46,12 +46,12 @@ public class FileUtils {
     }
 
     public boolean deleteFile(String path) throws Throwable {
-        boolean exists = new File(path).exists();
+        File pathFile = new File(path);
+        boolean exists = pathFile.exists();
         if (!exists) {
             return true;
         } // its already gone
         Process delPrc = processUtils.execute(Arrays.asList("rm", "-rf", path));
-        File pathFile = new File(path);
         if (delPrc.waitFor() == 0) {  // then we stat the file to confirm
             if (!pathFile.exists()) {
                 return true;

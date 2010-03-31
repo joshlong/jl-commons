@@ -1,18 +1,19 @@
 package com.joshlong.commons.utils;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.SystemUtils;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-
 import org.jmock.lib.legacy.ClassImposteriser;
-
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-
+import java.io.FileWriter;
+import java.io.Writer;
 import java.util.List;
-
 
 /**
  * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
@@ -22,10 +23,10 @@ public class FileUtilsTest {
     private ProcessUtils processUtils;
     private Mockery context = new Mockery() {
 
-            {
-                setImposteriser(ClassImposteriser.INSTANCE);
-            }
-        };
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
 
     @After
     public void destroy() throws Throwable {
@@ -44,11 +45,96 @@ public class FileUtilsTest {
         final File f = this.context.mock(File.class);
         this.context.checking(new Expectations() {
 
-                {
-                    one(f).getAbsolutePath();
-                }
-            });
+            {
+                one(f).getAbsolutePath();
+            }
+        });
         this.fileUtils.deleteFile(f);
+    }
+
+    @Test
+    public void testDeleteFiles()
+            throws Throwable {
+        final File f = this.context.mock(File.class);
+        final File tmpExistingFile = File.createTempFile("aaa", "txt");
+        Writer w = new FileWriter(tmpExistingFile.getAbsolutePath());
+        IOUtils.write("hello", w);
+        IOUtils.closeQuietly(w);
+
+        final Process proc = this.context.mock(Process.class);
+
+        this.context.checking(new Expectations() {
+            {
+
+                one(f).getAbsolutePath();
+                will(returnValue(tmpExistingFile.getAbsolutePath()));
+                one(processUtils).execute(with(any(List.class)));
+                will(returnValue(proc));
+
+                one(proc).waitFor();
+                will(returnValue(0));
+
+            }});
+        this.fileUtils.deleteFile(f);
+    }
+
+    @Test
+    public void testDeleteFiles1()
+            throws Throwable {
+        final File f = this.context.mock(File.class);
+        final File tmpExistingFile = File.createTempFile("aaa", "txt");
+        Writer w = new FileWriter(tmpExistingFile.getAbsolutePath());
+        IOUtils.write("hello", w);
+        IOUtils.closeQuietly(w);
+
+        final Process proc = this.context.mock(Process.class);
+
+        this.context.checking(new Expectations() {
+            {
+
+                one(f).getAbsolutePath();
+                will(returnValue(tmpExistingFile.getAbsolutePath()));
+                one(processUtils).execute(with(any(List.class)));
+                will(returnValue(proc));
+
+                one(proc).waitFor();
+                will(returnValue(1));
+
+            }});
+        this.fileUtils.deleteFile(f);
+    }
+
+    @Test
+    public void testDeleteFilesThatDoesntExist()
+            throws Throwable {
+        final File f = this.context.mock(File.class);
+        final File tmpExistingFile = new File(SystemUtils.getUserHome(), File.createTempFile("bbbvbbbb",
+                                                                                             "txt").getName() + ".txt");
+        if (tmpExistingFile.exists()) tmpExistingFile.delete();
+        Writer w = new FileWriter(tmpExistingFile.getAbsolutePath());
+        IOUtils.write("hello", w);
+        IOUtils.closeQuietly(w);
+        this.context.checking(new Expectations() {
+            {
+
+                one(f).getAbsolutePath();
+                will(returnValue(tmpExistingFile.getAbsolutePath()));
+                one(processUtils).execute(with(any(List.class)));
+            }});
+        this.fileUtils.deleteFile(f);
+    }
+
+    @Test
+    public void testDeleteFileStringPath()
+            throws Throwable {
+        final File f = this.context.mock(File.class);
+        this.context.checking(new Expectations() {
+            {
+// one( f).getAbsolutePath() ;
+
+            }});
+        Assert.assertTrue(this.fileUtils.deleteFile(new File(SystemUtils.getUserHome(), "/Desktop/foo.txt1")));
+
     }
 
     @Test
@@ -58,18 +144,18 @@ public class FileUtilsTest {
         final Process proc = this.context.mock(Process.class);
         this.context.checking(new Expectations() {
 
-                {
-                    one(a).getAbsolutePath();
-                    will(returnValue("/tmp/a.txt"));
-                    one(b).getAbsolutePath();
-                    will(returnValue("/tmp/b.txt"));
+            {
+                one(a).getAbsolutePath();
+                will(returnValue("/tmp/a.txt"));
+                one(b).getAbsolutePath();
+                will(returnValue("/tmp/b.txt"));
 
-                    one(processUtils).execute(with(any(List.class)));
-                    will(returnValue(proc));
-                    one(proc).waitFor();
-                    will(returnValue(1));
-                }
-            });
+                one(processUtils).execute(with(any(List.class)));
+                will(returnValue(proc));
+                one(proc).waitFor();
+                will(returnValue(1));
+            }
+        });
         this.fileUtils.copyFile(a, b);
     }
 
@@ -80,18 +166,18 @@ public class FileUtilsTest {
         final Process proc = this.context.mock(Process.class);
         this.context.checking(new Expectations() {
 
-                {
-                    one(a).getAbsolutePath();
-                    will(returnValue("/tmp/a.txt"));
-                    one(b).getAbsolutePath();
-                    will(returnValue("/tmp/b.txt"));
+            {
+                one(a).getAbsolutePath();
+                will(returnValue("/tmp/a.txt"));
+                one(b).getAbsolutePath();
+                will(returnValue("/tmp/b.txt"));
 
-                    one(processUtils).execute(with(any(List.class)));
-                    will(returnValue(proc));
-                    one(proc).waitFor();
-                    will(returnValue(0));
-                }
-            });
+                one(processUtils).execute(with(any(List.class)));
+                will(returnValue(proc));
+                one(proc).waitFor();
+                will(returnValue(0));
+            }
+        });
         this.fileUtils.copyFile(a, b);
     }
 
@@ -100,56 +186,56 @@ public class FileUtilsTest {
         final File f = this.context.mock(File.class);
         this.context.checking(new Expectations() {
 
-                {
-                    one(f).exists();
-                    will(returnValue(true));
-                }
-            });
+            {
+                one(f).exists();
+                will(returnValue(true));
+            }
+        });
 
         this.fileUtils.ensureDirectoryExists(f);
     }
 
     @Test
     public void testEnsureDirectoryExistsInNegativeCase()
-        throws Throwable {
+            throws Throwable {
         final File f = this.context.mock(File.class);
 
         final File fParent = this.context.mock(File.class, "parent");
 
         this.context.checking(new Expectations() {
 
-                {
-                    one(f).exists();
-                    will(returnValue(false));
-                    one(f).isFile();
-                    will(returnValue(true));
-                    one(f).getParentFile();
-                    will(returnValue(fParent));
-                    one(fParent).isDirectory();
-                    will(returnValue(true));
-                    one(fParent).mkdirs();
-                    will(returnValue(true));
-                }
-            });
+            {
+                one(f).exists();
+                will(returnValue(false));
+                one(f).isFile();
+                will(returnValue(true));
+                one(f).getParentFile();
+                will(returnValue(fParent));
+                one(fParent).isDirectory();
+                will(returnValue(true));
+                one(fParent).mkdirs();
+                will(returnValue(true));
+            }
+        });
 
         this.fileUtils.ensureDirectoryExists(f);
     }
 
     @Test
     public void testEnsureDirectoryExistsInNegativeCaseAndFileIsFile()
-        throws Throwable {
+            throws Throwable {
         final File f = this.context.mock(File.class);
         final File fParent = this.context.mock(File.class, "parent");
         this.context.checking(new Expectations() {
 
-                {
-                    one(f).exists();
-                    will(returnValue(false));
-                    one(f).isFile();
-                    will(returnValue(false));
-                    one(f).mkdirs();
-                }
-            });
+            {
+                one(f).exists();
+                will(returnValue(false));
+                one(f).isFile();
+                will(returnValue(false));
+                one(f).mkdirs();
+            }
+        });
 
         this.fileUtils.ensureDirectoryExists(f);
     }
