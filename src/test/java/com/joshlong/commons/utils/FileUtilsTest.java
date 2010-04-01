@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class FileUtilsTest {
         });
         this.fileUtils.deleteFile(f);
     }
+
     @Test
     public void testDeleteFilesDelProcFails() throws Throwable {
         final File f = this.context.mock(File.class);
@@ -63,13 +65,13 @@ public class FileUtilsTest {
             {
                 one(f).getAbsolutePath();
                 one(f).exists();
-                will(returnValue( true)) ;
+                will(returnValue(true));
 
                 one(processUtils).execute(with(any(List.class)));
                 will(returnValue(proc));
-                one(proc).waitFor() ; will(returnValue(1));
+                one(proc).waitFor();
+                will(returnValue(1));
 
-              
             }
         });
         this.fileUtils.deleteFile(f);
@@ -88,13 +90,15 @@ public class FileUtilsTest {
             {
                 one(f).getAbsolutePath();
                 one(f).exists();
-                will(returnValue( true)) ;
+                will(returnValue(true));
 
                 one(processUtils).execute(with(any(List.class)));
                 will(returnValue(proc));
-                one(proc).waitFor() ; will(returnValue(0));
+                one(proc).waitFor();
+                will(returnValue(0));
 
-                one(f).exists(); will(returnValue(false));
+                one(f).exists();
+                will(returnValue(false));
 
             }
         });
@@ -149,7 +153,6 @@ public class FileUtilsTest {
         this.fileUtils.deleteFile(f);
     }
 
-
     @Test
     public void testDeleteFileStringPath() throws Throwable {
         File x = new File(SystemUtils.getUserHome(), "/Desktop/foo.txt1");
@@ -178,38 +181,70 @@ public class FileUtilsTest {
         this.fileUtils.copyFile(a, b);
     }
 
+    void write(File f, String o) {
 
-    @Test
-    public void testCopyFile() throws Throwable {
-        final File a = this.context.mock(File.class, "a");
-        final File b = this.context.mock(File.class, "b");
-        final Process proc = this.context.mock(Process.class);
-        File tmpOutF =  File.createTempFile("tempA","txt");
-        final    String tmpOut =tmpOutF.getAbsolutePath();
+        try {
+            Writer w = new FileWriter(f);
+            IOUtils.write(o, w);
+            IOUtils.closeQuietly(w);
+        }
+        catch (IOException e) {
+            //
+        }
+    }
+     @Test
+    public void testCopyFileThatDoesntUltimatelyExist() throws Throwable {
 
-        Writer w = new FileWriter(tmpOut);
-        IOUtils.write("aaa", w);
-        IOUtils.closeQuietly(w);
+        File tmp = SystemUtils.getJavaIoTmpDir();
+        File a = new File(tmp, "/a/a.txt");
+        File b = new File(tmp, "/b/b.txt");
+
+        // clean up
+        if (a.exists()) a.delete();
+        if (b.exists()) b.delete();
+
+
+        // setup
+        b.mkdirs();
+        write(b, "aaaaaaaaaaa");
+
+
         this.context.checking(new Expectations() {
-
             {
-                one(a).getAbsolutePath();
-                will(returnValue("/tmp/a.txt"));
-                one(b).getAbsolutePath();
-                will(returnValue( tmpOut));
                 one(processUtils).execute(with(any(List.class)));
-                will(returnValue(proc));
-                one(proc).waitFor();
-                will(returnValue(0));
-                
-
 
             }
+
         });
+
         this.fileUtils.copyFile(a, b);
+    }
+    @Test
+    public void testCopyFile() throws Throwable {
+
+        File tmp = SystemUtils.getJavaIoTmpDir();
+        File a = new File(tmp, "/a/a.txt");
+        File b = new File(tmp, "/b/b.txt");
+
+        // clean up
+        if (a.exists()) a.delete();
+        if (b.exists()) b.delete();
 
 
+        // setup 
+        b.mkdirs();
+        write(b, "aaaaaaaaaaa");
 
+
+        this.context.checking(new Expectations() {
+            {
+                one(processUtils).execute(with(any(List.class)));
+
+            }
+
+        });
+
+        this.fileUtils.copyFile(a, b);
     }
 
     @Test

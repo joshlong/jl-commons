@@ -114,6 +114,8 @@ public class EmailsUtilsTest {
 
     }
 
+
+    
     @Test
     public void testSendingEmailWithEmptyHtml() throws Throwable {
 
