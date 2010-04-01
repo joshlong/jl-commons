@@ -41,17 +41,13 @@ public class FileUtils {
         this.processUtils = processUtils;
     }
 
-    public boolean deleteFile(File path) throws Throwable {
-        return deleteFile(path.getAbsolutePath());
-    }
-
-    public boolean deleteFile(String path) throws Throwable {
-        File pathFile = new File(path);
+    public boolean deleteFile(File pathFile) throws Throwable {
+//       File pathFile = new File(path);
         boolean exists = pathFile.exists();
         if (!exists) {
             return true;
         } // its already gone
-        Process delPrc = processUtils.execute(Arrays.asList("rm", "-rf", path));
+        Process delPrc = processUtils.execute(Arrays.asList("rm", "-rf", pathFile.getAbsolutePath()));
         if (delPrc.waitFor() == 0) {  // then we stat the file to confirm
             if (!pathFile.exists()) {
                 return true;
@@ -59,6 +55,7 @@ public class FileUtils {
         }
         return false;
     }
+ 
 
     public boolean copyFile(String in, String out) throws Throwable {
         File fout = new File(out);

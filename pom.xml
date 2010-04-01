@@ -103,9 +103,11 @@
             </plugin>
 
              <plugin>
+
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
                 <configuration>
+                    
                     <check>
                         <branchRate>90</branchRate>
                         <lineRate>90</lineRate>
@@ -120,6 +122,7 @@
                     <execution>
                         <goals>
                             <goal>clean</goal>
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
