@@ -160,25 +160,112 @@ public class FileUtilsTest {
     }
 
     @Test
-    public void testCopyFileThatStillFails() throws Throwable {
-        final File a = this.context.mock(File.class, "a");
-        final File b = this.context.mock(File.class, "b");
-        final Process proc = this.context.mock(Process.class);
-        this.context.checking(new Expectations() {
+    public void copyFiles3() throws Throwable {
 
+        File tmp = SystemUtils.getJavaIoTmpDir();
+        File a = new File(tmp, "/a/a.txt");
+        File b = new File(tmp, "/b/b.txt");
+
+        final File a1 = this.context.mock(File.class, "a");
+        final File b1 = this.context.mock(File.class, "b");
+        final File b1Parent = this.context.mock(File.class, "b1P");
+        final Process proc = this.context.mock(Process.class);
+
+        this.context.checking(new Expectations() {
             {
-                one(a).getAbsolutePath();
-                will(returnValue("/tmp/a.txt"));
-                one(b).getAbsolutePath();
-                will(returnValue("/tmp/b.txt"));
+
+                one(a1).getAbsolutePath();
+                one(b1).getAbsolutePath();
+                one(b1).getParentFile();
+                will(returnValue(b1Parent));
+                one(b1Parent).isFile();
+                one(b1Parent).mkdirs();
+                one(b1Parent).exists();
+                will(returnValue(false));
+
+                /*     one( processUtils).execute(with(any(List.class)));
+                                   will(returnValue(proc));
+
+                                   one(proc).waitFor() ; will(returnValue(0)) ;
+                                   one(b1).exists();will(returnValue(true)) ;
+                                   one(b1).length();will(returnValue(4L));
+                */
+
+            }
+        });
+
+        this.fileUtils.copyFile(a1, b1);
+    }
+
+    @Test
+    public void copyFiles4() throws Throwable {
+
+        File tmp = SystemUtils.getJavaIoTmpDir();
+        File a = new File(tmp, "/a/a.txt");
+        File b = new File(tmp, "/b/b.txt");
+
+        final File a1 = this.context.mock(File.class, "a");
+        final File b1 = this.context.mock(File.class, "b");
+        final File b1Parent = this.context.mock(File.class, "b1P");
+        final Process proc = this.context.mock(Process.class);
+
+        this.context.checking(new Expectations() {
+            {
+
+                one(a1).getAbsolutePath();
+                one(b1).getAbsolutePath();
+                one(b1).getParentFile();
+                will(returnValue(b1Parent));
+             /*   one(b1Parent).isFile();
+                one(b1Parent).mkdirs();*/
+                one(b1Parent).exists();
+                will(returnValue(true));
+                one(processUtils).execute(with(any(List.class)));
+                one(b1).exists() ;
+              /*  one(proc).waitFor();will(returnValue(0)) ;
+*/
+            }
+        });
+
+        this.fileUtils.copyFile(a1, b1);
+    }
+
+    @Test
+    public void copyFiles2() throws Throwable {
+
+        File tmp = SystemUtils.getJavaIoTmpDir();
+        File a = new File(tmp, "/a/a.txt");
+        File b = new File(tmp, "/b/b.txt");
+
+        final File a1 = this.context.mock(File.class, "a");
+        final File b1 = this.context.mock(File.class, "b");
+        final File b1Parent = this.context.mock(File.class, "b1P");
+        final Process proc = this.context.mock(Process.class);
+
+        this.context.checking(new Expectations() {
+            {
+
+                one(a1).getAbsolutePath();
+                one(b1).getAbsolutePath();
+                one(b1).getParentFile();
+                will(returnValue(b1Parent));
+                one(b1Parent).exists();
+                will(returnValue(true));
 
                 one(processUtils).execute(with(any(List.class)));
                 will(returnValue(proc));
+
                 one(proc).waitFor();
-                will(returnValue(1));
+                will(returnValue(0));
+                one(b1).exists();
+                will(returnValue(true));
+                one(b1).length();
+                will(returnValue(4L));
+
             }
         });
-        this.fileUtils.copyFile(a, b);
+
+        this.fileUtils.copyFile(a1, b1);
     }
 
     void write(File f, String o) {
@@ -192,7 +279,8 @@ public class FileUtilsTest {
             //
         }
     }
-     @Test
+
+    @Test
     public void testCopyFileThatDoesntUltimatelyExist() throws Throwable {
 
         File tmp = SystemUtils.getJavaIoTmpDir();
@@ -203,22 +291,20 @@ public class FileUtilsTest {
         if (a.exists()) a.delete();
         if (b.exists()) b.delete();
 
-
         // setup
         b.mkdirs();
-        write(b, "aaaaaaaaaaa");
-
+        write(a, "allo");
+        write(b, "world");
 
         this.context.checking(new Expectations() {
             {
                 one(processUtils).execute(with(any(List.class)));
-
             }
-
         });
 
         this.fileUtils.copyFile(a, b);
     }
+
     @Test
     public void testCopyFile() throws Throwable {
 
@@ -230,11 +316,10 @@ public class FileUtilsTest {
         if (a.exists()) a.delete();
         if (b.exists()) b.delete();
 
-
-        // setup 
+        // setup
         b.mkdirs();
-        write(b, "aaaaaaaaaaa");
-
+        write(a, "allo");
+        write(b, "world");
 
         this.context.checking(new Expectations() {
             {

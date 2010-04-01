@@ -57,24 +57,21 @@ public class FileUtils {
     }
  
 
-    public boolean copyFile(String in, String out) throws Throwable {
-        File fout = new File(out);
-        List<String> parts = Arrays.asList("cp", "-f", new File(in).getAbsolutePath(),
-                                           fout.getAbsolutePath());
+    public boolean copyFile(File i, File fout) throws Throwable {
+        List<String> parts = Arrays.asList("cp", "-f", i.getAbsolutePath(),
+                                          fout.getAbsolutePath());
         if (!ensureDirectoryExists(fout.getParentFile())) {
             return false;
         }
         Process cpProc = processUtils.execute(parts);
         if (cpProc.waitFor() == 0) {
-            File outputFile = new File(out);
-            if (outputFile.exists() && outputFile.length() > 0) {
+
+            if (fout.exists() && fout.length() > 0) {
                 return true;
             }
         }
         return false;
     }
 
-    public boolean copyFile(File in, File out) throws Throwable {
-        return copyFile(in.getAbsolutePath(), out.getAbsolutePath());
-    }
+    
 }
