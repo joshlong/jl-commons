@@ -50,6 +50,30 @@ public class FileUtilsTest {
         });
         this.fileUtils.deleteFile(f);
     }
+    @Test
+    public void testDeleteFilesDelProcFails() throws Throwable {
+        final File f = this.context.mock(File.class);
+        final File tmpExistingFile = File.createTempFile("aaa", "txt");
+        Writer w = new FileWriter(tmpExistingFile.getAbsolutePath());
+        IOUtils.write("hello", w);
+        IOUtils.closeQuietly(w);
+
+        final Process proc = this.context.mock(Process.class);
+        this.context.checking(new Expectations() {
+            {
+                one(f).getAbsolutePath();
+                one(f).exists();
+                will(returnValue( true)) ;
+
+                one(processUtils).execute(with(any(List.class)));
+                will(returnValue(proc));
+                one(proc).waitFor() ; will(returnValue(1));
+
+              
+            }
+        });
+        this.fileUtils.deleteFile(f);
+    }
 
     @Test
     public void testDeleteFiles() throws Throwable {
@@ -62,7 +86,16 @@ public class FileUtilsTest {
         final Process proc = this.context.mock(Process.class);
         this.context.checking(new Expectations() {
             {
+                one(f).getAbsolutePath();
                 one(f).exists();
+                will(returnValue( true)) ;
+
+                one(processUtils).execute(with(any(List.class)));
+                will(returnValue(proc));
+                one(proc).waitFor() ; will(returnValue(0));
+
+                one(f).exists(); will(returnValue(false));
+
             }
         });
         this.fileUtils.deleteFile(f);
@@ -145,26 +178,38 @@ public class FileUtilsTest {
         this.fileUtils.copyFile(a, b);
     }
 
+
     @Test
     public void testCopyFile() throws Throwable {
         final File a = this.context.mock(File.class, "a");
         final File b = this.context.mock(File.class, "b");
         final Process proc = this.context.mock(Process.class);
+        File tmpOutF =  File.createTempFile("tempA","txt");
+        final    String tmpOut =tmpOutF.getAbsolutePath();
+
+        Writer w = new FileWriter(tmpOut);
+        IOUtils.write("aaa", w);
+        IOUtils.closeQuietly(w);
         this.context.checking(new Expectations() {
 
             {
                 one(a).getAbsolutePath();
                 will(returnValue("/tmp/a.txt"));
                 one(b).getAbsolutePath();
-                will(returnValue("/tmp/b.txt"));
-
+                will(returnValue( tmpOut));
                 one(processUtils).execute(with(any(List.class)));
                 will(returnValue(proc));
                 one(proc).waitFor();
                 will(returnValue(0));
+                
+
+
             }
         });
         this.fileUtils.copyFile(a, b);
+
+
+
     }
 
     @Test
