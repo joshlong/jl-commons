@@ -14,8 +14,6 @@ public class FileUtils {
 
     private ProcessUtils processUtils;
 
-
-
     public FileUtils(ProcessUtils processUtils) {
         this.processUtils = processUtils;
     }
@@ -55,11 +53,10 @@ public class FileUtils {
         }
         return false;
     }
- 
 
     public boolean copyFile(File i, File fout) throws Throwable {
         List<String> parts = Arrays.asList("cp", "-f", i.getAbsolutePath(),
-                                          fout.getAbsolutePath());
+                                           fout.getAbsolutePath());
         if (!ensureDirectoryExists(fout.getParentFile())) {
             return false;
         }
@@ -73,5 +70,4 @@ public class FileUtils {
         return false;
     }
 
-    
 }

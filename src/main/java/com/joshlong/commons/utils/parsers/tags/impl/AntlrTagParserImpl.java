@@ -1,12 +1,13 @@
 package com.joshlong.commons.utils.parsers.tags.impl;
 
+import com.joshlong.commons.utils.parsers.tags.impl.antlr.TagsLexer;
+import com.joshlong.commons.utils.parsers.tags.impl.antlr.TagsParser;
 import org.antlr.runtime.ANTLRReaderStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.IOUtils;
 
-import com.joshlong.commons.utils.parsers.tags.impl.antlr.*;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;

@@ -62,7 +62,7 @@ public class EmailUtils {
             macros = new HashMap<String, Object>();
         }
 
-        String answer =StringUtils.EMPTY;
+        String answer = StringUtils.EMPTY;
 
         Map<String, Object> vals = new HashMap<String, Object>(macros);
         vals.put("dateTool", new DateTool());

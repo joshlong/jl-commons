@@ -7,7 +7,6 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
  */
@@ -21,7 +20,8 @@ public class ProcessUtils {
     public ProcessUtils() {
         try {
             this.setHost(InetAddress.getLocalHost());
-        } catch (UnknownHostException e) {
+        }
+        catch (UnknownHostException e) {
             // do nothing .. 
         }
     }
@@ -35,10 +35,12 @@ public class ProcessUtils {
 
         try {
             uid = host.getCanonicalHostName();
-        } catch (Throwable t) {
+        }
+        catch (Throwable t) {
             try {
                 uid = host.getHostAddress();
-            } catch (Throwable te) {
+            }
+            catch (Throwable te) {
                 // don't care
             }
         }
@@ -64,9 +66,9 @@ public class ProcessUtils {
         String[] cmdPS = cmd.split(" ");
 
         for (String cP : cmdPS) {
-           // if (!StringUtils.isEmpty(cP)) {
-                atoms.add(StringUtils.defaultString(cP).trim());
-         //   }
+            // if (!StringUtils.isEmpty(cP)) {
+            atoms.add(StringUtils.defaultString(cP).trim());
+            //   }
         }
 
         return atoms;
@@ -80,5 +82,4 @@ public class ProcessUtils {
         return prepare(cmd).start();
     }
 
-   
 }
