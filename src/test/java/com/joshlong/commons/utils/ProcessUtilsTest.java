@@ -122,7 +122,6 @@ public class ProcessUtilsTest {
         Assert.assertNotNull(proc);
     }
 
- git 
     /**
      * Method: toAtoms(String cmd)
      *
