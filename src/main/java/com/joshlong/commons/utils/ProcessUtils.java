@@ -1,37 +1,55 @@
 package com.joshlong.commons.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.SystemUtils;
 
-import java.io.File;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
  */
 public class ProcessUtils {
+    private InetAddress host;
+
+    public ProcessUtils(InetAddress host) {
+        this.setHost(host);
+    }
+
+    public ProcessUtils() {
+        try {
+            this.setHost(InetAddress.getLocalHost());
+        } catch (UnknownHostException e) {
+            // do nothing .. 
+        }
+    }
+
+    public void setHost(InetAddress addy) {
+        this.host = addy;
+    }
 
     public String getUniqueHostId() {
         String uid = null;
+
         try {
-            uid = InetAddress.getLocalHost().getCanonicalHostName();
-        }
-        catch (Throwable t) {
+            uid = host.getCanonicalHostName();
+        } catch (Throwable t) {
             try {
-                uid = InetAddress.getLocalHost().getHostAddress();
-            }
-            catch (Throwable te) {
+                uid = host.getHostAddress();
+            } catch (Throwable te) {
                 // don't care
             }
         }
+
         return uid;
     }
 
     public ProcessBuilder prepare(List<String> cmd) throws Throwable {
         ProcessBuilder processBuilder = new ProcessBuilder(cmd);
         processBuilder.redirectErrorStream(true);
+
         return processBuilder;
     }
 
@@ -39,15 +57,18 @@ public class ProcessUtils {
         return prepare(toAtoms(cmd));
     }
 
-    private List<String> toAtoms(String cmd) {
+    List<String> toAtoms(String cmd) {
         List<String> atoms = new ArrayList<String>();
         cmd = StringUtils.defaultString(cmd) + " ";
-        String cmdPS[] = cmd.split(" ");
+
+        String[] cmdPS = cmd.split(" ");
+
         for (String cP : cmdPS) {
-            if (!StringUtils.isEmpty(cP)) {
+           // if (!StringUtils.isEmpty(cP)) {
                 atoms.add(StringUtils.defaultString(cP).trim());
-            }
+         //   }
         }
+
         return atoms;
     }
 
@@ -58,13 +79,6 @@ public class ProcessUtils {
     public Process execute(List<String> cmd) throws Throwable {
         return prepare(cmd).start();
     }
-    // hacky!
 
-    public String adjustForOsSpecificPath(String commmand) {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return new File("/cygwin/bin/", commmand).getAbsolutePath();
-        }
-        return commmand;
-    }
-
+   
 }
