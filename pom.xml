@@ -4,6 +4,16 @@
     <groupId>com.joshlong.commons</groupId>
     <artifactId>utils</artifactId>
     <version>1.0-SNAPSHOT</version>
+
+  <organization>
+    <name>JoshLong.com</name>
+    <url>http://www.joshlong.com</url>
+  </organization>
+
+  <scm>
+    <connection>scm:git:git@github.com:joshlong/jl-commons.git</connection>
+    <developerConnection>scm:git:git://github.com/joshlong/jl-commons.git</developerConnection>
+  </scm> 
     <dependencies>
         <dependency>
             <groupId>commons-io</groupId>
@@ -48,10 +58,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.jmock</groupId><artifactId>jmock</artifactId><version>2.5.1</version>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock</artifactId>
+            <version>2.5.1</version>
         </dependency>
         <dependency>
-            <groupId>org.jmock</groupId><artifactId>jmock-legacy</artifactId><version>2.5.1</version>
+            <groupId>org.jmock</groupId>
+            <artifactId>jmock-legacy</artifactId>
+            <version>2.5.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -85,9 +99,42 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.1</version>
                 <configuration>
-                    <source>1.5</source>
-                    <target>1.5</target>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-scm-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-utils</artifactId>
+                        <version>1.5.7</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.1</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-utils</artifactId>
+                        <version>1.5.7</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.antlr</groupId>
@@ -102,7 +149,7 @@
                 </executions>
             </plugin>
 
-             <plugin>
+            <plugin>
 
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
@@ -134,7 +181,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> 
+            </plugin>
 
         </plugins>
     </build>
