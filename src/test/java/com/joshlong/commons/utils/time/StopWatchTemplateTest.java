@@ -18,42 +18,44 @@ public class StopWatchTemplateTest {
         }
     };
 
-    private StopWatchTemplate stopWatchTemplate ;
+    private StopWatchTemplate stopWatchTemplate;
 
     @Before
     public void setUp() throws Exception {
 
-        this.stopWatchTemplate=new StopWatchTemplate();
+        this.stopWatchTemplate = new StopWatchTemplate();
 
     }
 
     /**
      * Method: execute(StopWatchCallback stopWatchCallback)
-     */     @Test
+     */
+    @Test(expected = NullPointerException.class)
     public void testExecuteWithNullStopWatchCallback() throws Throwable {
-          final   StopWatchCallback stopWatchCallback = this.context.mock( StopWatchCallback.class) ;
+        final StopWatchCallback stopWatchCallback = this.context.mock(StopWatchCallback.class);
 
-        this.context.checking( new Expectations(){
+        this.context.checking(new Expectations() {
             {
-               // one(stopWatchCallback).execute();;
+                // one(stopWatchCallback).execute();;
             }
         });
-        this.stopWatchTemplate.execute(  null  );
+        this.stopWatchTemplate.execute(null);
     }
-
 
     /**
      * Method: execute(StopWatchCallback stopWatchCallback)
-     */     @Test
+     */
+    @Test
     public void testExecute() throws Throwable {
-          final   StopWatchCallback stopWatchCallback = this.context.mock( StopWatchCallback.class) ;
+        final StopWatchCallback stopWatchCallback = this.context.mock(StopWatchCallback.class);
 
-        this.context.checking( new Expectations(){
+        this.context.checking(new Expectations() {
             {
-                one(stopWatchCallback).execute();;
+                one(stopWatchCallback).execute();
+                 
             }
         });
-        this.stopWatchTemplate.execute( stopWatchCallback );
+        this.stopWatchTemplate.execute(stopWatchCallback);
     }
 
 }

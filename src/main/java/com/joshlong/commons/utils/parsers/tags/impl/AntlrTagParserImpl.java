@@ -7,6 +7,7 @@ import org.antlr.runtime.CommonTokenStream;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -15,10 +16,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * @author <a href="mailto:josh@joshlong.com">Josh Long</a>
+ */
 public class AntlrTagParserImpl implements ITagParser {
 
-    private String normalizedTagString(String input) {
-        input = input == null ? "" : input.trim();
+    String normalizedTagString(String i) {
+        String input = StringUtils.defaultString(i).trim();
         String[] ends = {"'", "\""};
         for (String endPointString : ends) {
             if (input.startsWith(endPointString) && input.endsWith(endPointString)) {
@@ -33,8 +37,8 @@ public class AntlrTagParserImpl implements ITagParser {
         return input;
     }
 
-    private List<String> extractTagsFromString(String in) throws Throwable {
-        InputStream stringToInputStream = IOUtils.toInputStream(in);
+    List<String> extractTagsFromString(CharSequence in) throws Throwable {
+        InputStream stringToInputStream = IOUtils.toInputStream(in.toString());
         //test :: "cow 'cows' 'dogs and cat' \"monkeys and cats\" #cows ");
         Reader inputStreamReader = new InputStreamReader(stringToInputStream);
         TagsLexer tagsLexer = new TagsLexer(new ANTLRReaderStream(inputStreamReader));
@@ -46,7 +50,7 @@ public class AntlrTagParserImpl implements ITagParser {
         return tags;
     }
 
-    private List<String> normalizeListOfTags(List<String> input) {
+    List<String> normalizeListOfTags(List<String> input) {
         CollectionUtils.transform(input, new Transformer() {
             public Object transform(Object object) {
                 String inputString = (String) object;
@@ -58,6 +62,7 @@ public class AntlrTagParserImpl implements ITagParser {
 
     public Set<String> getUniqueNormalizedTagsFromString(String tags) {
         try {
+            
             List<String> tagsStringList = normalizeListOfTags(extractTagsFromString(tags));
             Set<String> uniqueStrings = new HashSet<String>(tagsStringList);
             return uniqueStrings;
@@ -75,6 +80,7 @@ public class AntlrTagParserImpl implements ITagParser {
         return normalizedTagString(input).indexOf(" ") != -1;
     }
 
+/*
     public static void main(String[] a) {
         ITagParser parser = new AntlrTagParserImpl();
         for (String tag : parser.getUniqueNormalizedTagsFromString("cow #cow 'cows and dogs' \"cows and dogs\" dogs")) {
@@ -83,5 +89,6 @@ public class AntlrTagParserImpl implements ITagParser {
         System.out.println("is hash tag: " + parser.isHashTag("#foo"));  // this is the kind of tag that 'twitter' uses 
         System.out.println("is multi token tag: " + parser.isMultiTokenTag("cow and dog"));
     }
+*/
 
 }
